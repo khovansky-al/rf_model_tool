@@ -146,6 +146,10 @@ vert_objects = []
 face_objects = []
 
 vert_normals.each do |v|
+  # Blender fucks up normals or idk, gotta check. This is a dirty fix
+  unless v.normals
+    v.normals = Struct::Normal.new(0.0, 0.0, 0.0)
+  end
   vert = RfVertex.new(
     x: v.x,
     y: v.y,
@@ -172,10 +176,10 @@ faces_uv.each do |face|
 end
 
 world_matrix = Matrix44.new(
-  x: [0.030, 0.999, -0.007, 0],
-  y: [-0.038, -0.006, -0.999, 0],
-  z: [-0.998, 0.030, 0.038, 0],
-  w: [-0.019, 0.288, -0.145, 1]
+  x: [1, 0, 0, 0],
+  y: [0, 1, 0, 0],
+  z: [0, 0, 1, 0],
+  w: [0, 0, 0, 1]
 )
 
 EDIT_SECTION = 5
@@ -187,10 +191,10 @@ msh_entity = MshEntity.new(
   msh_name: orig_model.msh_entities[EDIT_SECTION].msh_name, 
   limb_name: orig_model.msh_entities[EDIT_SECTION].limb_name,
   mtx1: orig_model.msh_entities[EDIT_SECTION].mtx1,
-  mtx2: orig_model.msh_entities[EDIT_SECTION].mtx2,
+  mtx2: world_matrix,
   mtx3: orig_model.msh_entities[EDIT_SECTION].mtx3,
-  vertices_count: vert_normals.count,
-  faces_count: faces_uv.count,
+  vertices_count: vert_objects.count,
+  faces_count: face_objects.count,
   bones_count: 0,
   texture: texture_name,
   vertices: vert_objects,
