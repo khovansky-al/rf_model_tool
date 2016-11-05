@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 require 'bindata'
+require_relative 'mshtoobj'
 
 class Matrix44 < BinData::Record
   endian :little
@@ -19,9 +20,11 @@ class RfVertex < BinData::Record
   float :z
   float :w
 
-  float :normal_x
-  float :normal_y
-  float :normal_z
+  struct :normals do
+    float :x
+    float :y
+    float :z
+  end
 end
 
 class RfFace < BinData::Record
@@ -41,8 +44,8 @@ end
 class MshEntity < BinData::Record
   endian :little
 
-  string :msh_name, length: 100
-  string :limb_name, length: 100 # ?
+  string :msh_name, length: 100, trim_padding: true
+  string :limb_name, length: 100, trim_padding: true # ?
   
   matrix44 :mtx1
   matrix44 :mtx2
@@ -52,8 +55,8 @@ class MshEntity < BinData::Record
   uint16 :faces_count
   uint16 :bones_count #?
   
-  string :texture, length: 100
-  string :texture_2, length: 100 #?
+  string :texture, length: 100, trim_padding: true
+  string :texture_2, length: 100, trim_padding: true #?
   
   skip length: 23 * 4 + 2 + 1 #that looks like some more matrixes or smth
   
@@ -84,21 +87,24 @@ time_delta = time_end - time_start
 puts "Parsed #{MODEL_FILENAME} in #{time_delta}ms."
 puts "Meshes count: #{model.msh_count}"
 
-puts "Mesh: #{model.msh_entities[0].msh_name}"
-puts "Limb: #{model.msh_entities[0].limb_name}"
+puts "Mesh: #{model.msh_entities[5].msh_name}"
+puts "Limb: #{model.msh_entities[5].limb_name}"
 puts "========"
-puts "Mtx1: #{model.msh_entities[0].mtx1}"
-puts "Mtx2: #{model.msh_entities[0].mtx2}"
-puts "Mtx3: #{model.msh_entities[0].mtx3}"
+puts "Mtx1: #{model.msh_entities[5].mtx1}"
+puts "Mtx2: #{model.msh_entities[5].mtx2}"
+puts "Mtx3: #{model.msh_entities[5].mtx3}"
 puts "========"
-puts "Vertices count: #{model.msh_entities[0].vertices_count}"
-puts "Faces count: #{model.msh_entities[0].faces_count}"
-puts "Bones count: #{model.msh_entities[0].bones_count}"
+puts "Vertices count: #{model.msh_entities[5].vertices_count}"
+puts "Faces count: #{model.msh_entities[5].faces_count}"
+puts "Bones count: #{model.msh_entities[5].bones_count}"
 puts "========"
-puts "Texture name: #{model.msh_entities[0].texture}"
-puts "Tex2 name: #{model.msh_entities[0].texture_2}"
+puts "Texture name: #{model.msh_entities[5].texture}"
+puts "Tex2 name: #{model.msh_entities[5].texture_2}"
 puts "========"
-puts "Vertices: #{model.msh_entities[0].vertices}"
-puts "Faces: #{model.msh_entities[0].faces}"
-puts "Bones number again?: #{model.msh_entities[0].bones_num}"
+puts "Vertices: #{model.msh_entities[5].vertices[0]}"
+puts "Faces: #{model.msh_entities[5].faces[0]}"
+puts "Bones number again?: #{model.msh_entities[5].bones_num}"
 
+puts "Converting to .obj..."
+convertor = MshToObj.new(model, MODEL_FILENAME)
+convertor.convert 
