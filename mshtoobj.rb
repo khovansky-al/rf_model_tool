@@ -34,8 +34,8 @@ class MshToObj
     normals = []
 
     mesh.vertices.each do |rf_vertex|
-      vertices << [rf_vertex.x, rf_vertex.y, rf_vertex.z].map { |v| v.round(6) }
-      normals << [rf_vertex.normals.x, rf_vertex.normals.y, rf_vertex.normals.z].map { |v| v.round(6) }
+      vertices << [rf_vertex.x, rf_vertex.y, rf_vertex.z, rf_vertex.w]
+      normals << [rf_vertex.normals.x, rf_vertex.normals.y, rf_vertex.normals.z]
     end
 
     [vertices, normals]
@@ -68,11 +68,12 @@ class MshToObj
       f.puts '#'
       self.meshes.each do |name, data|
         # fixed_name = BinData::Stringz.new.read(name) # Better way would be create a separate data struct for name in parser and count bytes
-        fixed_name = 'mesh' # Better way would be create a separate data struct for name in parser and count bytes
+        # fixed_name = 'mesh' # Better way would be create a separate data struct for name in parser and count bytes
+        fixed_name = name
         f.puts "g #{fixed_name}"
         
         data[:vertices].each do |vertex|
-          f.puts "v %.6f %.6f %.6f" % vertex
+          f.puts "v %.6f %.6f %.6f %.6f" % vertex
         end
 
         f.puts

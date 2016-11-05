@@ -2,12 +2,14 @@ GEM
   remote: https://rubygems.org/
   specs:
     bindata (2.3.4)
+    wavefront (0.1.2)
 
 PLATFORMS
   x86-mingw32
 
 DEPENDENCIES
   bindata
+  wavefront
 
 BUNDLED WITH
    1.13.6

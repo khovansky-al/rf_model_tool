@@ -44,7 +44,7 @@ end
 class MshEntity < BinData::Record
   endian :little
 
-  string :msh_name, length: 100, trim_padding: true, trim_value: true
+  string :msh_name, length: 100, trim_padding: true
   string :limb_name, length: 100, trim_padding: true # ?
   
   matrix44 :mtx1
@@ -73,10 +73,8 @@ class RfMsh < BinData::Record
   array :msh_entities, type: :msh_entity, initial_length: :msh_count
 end
 
-# MODEL_FILENAME='BELCOR_WEAPON_TSTAFF_076'
+MODEL_FILENAME='BELCOR_WEAPON_TSTAFF_076'
 # MODEL_FILENAME='BC_W_TSTAFF_201'
-# MODEL_FILENAME='ACCRETIA_WEAPON_TLAUNCHER_068'
-MODEL_FILENAME='COM_WEAPON_TMACHINEGUN_068'
 # $stderr.reopen("err.txt", "w")
 
 time_start = Time.now
