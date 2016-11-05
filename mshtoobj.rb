@@ -43,7 +43,6 @@ class MshToObj
   def parse_faces(mesh)
     tex_coords = []
     faces = []
-    face_count = 0
 
     mesh.faces.each_with_index do |rf_face, i|
       rf_face.uv.map { |uv| [uv.tex_u, uv.tex_v * -1, 0]  }.each do |prepared_vt|
@@ -52,11 +51,9 @@ class MshToObj
 
       face = []
       rf_face.indices.each_with_index do |index, coord_index|
-        face_count += 1
-        face << [index + 1, face_count, index + 1]
+        face << [index + 1, i * 3 + (coord_index + 1), index + 1]
       end
       faces << face
-      # faces << rf_face.indices.to_a
     end
 
     [tex_coords, faces]
