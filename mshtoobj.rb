@@ -1,3 +1,4 @@
+require 'bindata'
 class MshToObj
   
   attr_reader :model, :filename
@@ -66,8 +67,10 @@ class MshToObj
       f.puts '#RF Model Convertor 0.1'
       f.puts '#'
       self.meshes.each do |name, data|
-        f.puts "g #{name}"
-
+        # fixed_name = BinData::Stringz.new.read(name) # Better way would be create a separate data struct for name in parser and count bytes
+        fixed_name = 'mesh' # Better way would be create a separate data struct for name in parser and count bytes
+        f.puts "g #{fixed_name}"
+        
         data[:vertices].each do |vertex|
           f.puts "v %.6f %.6f %.6f" % vertex
         end
@@ -85,7 +88,7 @@ class MshToObj
         end
 
         f.puts
-        f.puts "g #{name}"
+        f.puts "g #{fixed_name}"
         f.puts "usemtl #{File.basename(data[:texture])}"
         data[:faces].each do |face|
           f.puts "f #{face[0].join('/')} #{face[1].join('/')} #{face[2].join('/')}"
