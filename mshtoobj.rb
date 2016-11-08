@@ -2,12 +2,13 @@ require 'bindata'
 class MshToObj
   
   attr_reader :model, :filename
-  attr_accessor :meshes
+  attr_accessor :meshes, :vtx_offset
 
   def initialize(model, filename)
     # @model = model
     @filename = filename
     @meshes = {}
+    @vtx_offset = 0
 
     print "Parsing mesh..."
     parse_meshes(model)
@@ -26,6 +27,7 @@ class MshToObj
       self.meshes[mesh.msh_name][:vertices], self.meshes[mesh.msh_name][:normals] = parse_vertices(mesh)
       self.meshes[mesh.msh_name][:tex_coords], self.meshes[mesh.msh_name][:faces] = parse_faces(mesh)
       self.meshes[mesh.msh_name][:texture] = mesh.texture
+      self.vtx_offset += self.meshes[mesh.msh_name][:vertices].count
     end
   end
 
@@ -52,7 +54,7 @@ class MshToObj
 
       face = []
       rf_face.indices.each_with_index do |index, coord_index|
-        face << [index + 1, i * 3 + (coord_index + 1), index + 1]
+        face << [self.vtx_offset + index + 1, i * 3 + (coord_index + 1), self.vtx_offset + index + 1]
       end
       faces << face
     end
@@ -71,6 +73,7 @@ class MshToObj
         # fixed_name = 'mesh' # Better way would be create a separate data struct for name in parser and count bytes
         fixed_name = name
         f.puts "g #{fixed_name}"
+        f.puts "usemtl #{File.basename(data[:texture])}"
         
         data[:vertices].each do |vertex|
           f.puts "v %.6f %.6f %.6f %.6f" % vertex
@@ -89,12 +92,14 @@ class MshToObj
         end
 
         f.puts
-        f.puts "g #{fixed_name}"
-        f.puts "usemtl #{File.basename(data[:texture])}"
+        # f.puts "g #{fixed_name}"
+        # f.puts "usemtl #{File.basename(data[:texture])}"
         data[:faces].each do |face|
           f.puts "f #{face[0].join('/')} #{face[1].join('/')} #{face[2].join('/')}"
         end
       end
+
+      f.puts
 
     end
     puts "Done!"

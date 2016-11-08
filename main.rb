@@ -73,8 +73,9 @@ class RfMsh < BinData::Record
   array :msh_entities, type: :msh_entity, initial_length: :msh_count
 end
 
-MODEL_FILENAME='BELCOR_WEAPON_TSTAFF_076'
+# MODEL_FILENAME='BELCOR_WEAPON_TSTAFF_076'
 # MODEL_FILENAME='BC_W_TSTAFF_201'
+MODEL_FILENAME='BELCOR_ARMOR_LSHIELD_169'
 # $stderr.reopen("err.txt", "w")
 
 time_start = Time.now

@@ -1,0 +1,97 @@
+[filemask="*.bn"]//msh format
+
+
+struct bone_group
+{
+i16 bones_count;
+child bone [count=bones_count];
+}
+
+struct bone
+{
+	cstr [len=100] boneName;
+	cstr [len=100] parentBoneName;
+
+	repeat matrix [count=3] {
+		float x1;
+		float x2;
+		float x3;
+		float x4;
+		
+		float y1;
+		float y2;
+		float y3;
+		float y4;
+		
+		float z1;
+		float z2;
+		float z3;
+		float z4;
+		
+		float w1;
+		float w2;
+		float w3;
+		float w4;
+	}
+	
+	i16 cnt_unk;
+	i16 sbbone_count;
+	
+	if (sbbone_count > 0)
+	{
+		skip 206; // Texture data?
+		float umtx_1;
+		float umtx_2;
+		float umtx_3;
+		float umtx_4;
+		float umtx_5;
+		//i32 wat; // Most likely block ending, comes after 32 bytes
+		//i32 wat;
+		//i32 wat;
+		//i32 wat;
+		skip 71;
+	
+		repeat b1 [count=cnt_unk] {
+			float b1_1;
+			float b1_2;
+			float b1_3;
+			float b1_4;
+			float b1_5;
+			float b1_6;
+			float b1_7;
+		}
+	
+		skip 12; // 0 1 2 ending
+		
+		repeat possiblyBone [count=sbbone_count - 1] {
+			float pb1_1;
+			float pb1_2;
+			float pb1_3;
+			float pb1_4;
+			float pb1_5;
+			float pb1_6;
+			float pb1_7;
+			float pb1_8;
+			float pb1_9;
+			skip 40; //actually some data in this block
+			i32 some1;
+			i32 some2;
+			i32 some3; // embedded bone?
+		}
+	
+	
+		float pb1_1;
+		float pb1_2;
+		float pb1_3;
+		float pb1_4;
+		float pb1_5;
+		float pb1_6;
+		float pb1_7;
+		float pb1_8;
+		float pb1_9;
+		skip 40; //actually some data in this block
+		i32 some1;
+	} else {
+		skip 301;
+	}
+}

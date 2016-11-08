@@ -105,7 +105,7 @@ end
 MODEL_FILENAME='BELCOR_WEAPON_TSTAFF_076'
 MSH_NAME="W00"
 BONE_NAME='Bip01 R Finger0'
-file = File.open("#{MODEL_FILENAME}.obj", "r")
+file = File.open("new_staff.obj", "r")
 
 vertices, normals, uv_coords, faces = [], [], [], []
 texture_name = 'dummy.dds'
