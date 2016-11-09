@@ -34,10 +34,10 @@ struct bone
 		float w4;
 	}
 	
-	i16 cnt_unk;
-	i16 sbbone_count;
+	i16 vertices_count;
+	i16 bone_faces_count;
 	
-	if (sbbone_count > 0)
+	if (bone_faces_count > 0)
 	{
 		skip 206; // Texture data?
 		float umtx_1;
@@ -51,19 +51,20 @@ struct bone
 		//i32 wat;
 		skip 71;
 	
-		repeat b1 [count=cnt_unk] {
-			float b1_1;
-			float b1_2;
-			float b1_3;
-			float b1_4;
-			float b1_5;
-			float b1_6;
-			float b1_7;
+		// Must be that D3D3Vec with normals (x,y,z,w, normals: x,y,z)
+		repeat vertex [count=vertices_count] {
+			float vtx_x;
+			float vtx_y;
+			float vtx_z;
+			float vtx_w;
+			float vtx_normal_x;
+			float vtx_normal_y;
+			float vtx_normal_z;
 		}
 	
 		skip 12; // 0 1 2 ending
 		
-		repeat possiblyBone [count=sbbone_count - 1] {
+		repeat faces [count=bone_faces_count - 1] {
 			float pb1_1;
 			float pb1_2;
 			float pb1_3;
@@ -73,10 +74,24 @@ struct bone
 			float pb1_7;
 			float pb1_8;
 			float pb1_9;
-			skip 40; //actually some data in this block
-			i32 some1;
-			i32 some2;
-			i32 some3; // embedded bone?
+			
+			float TU;
+			float TV;
+			skip 4; // NULL
+			
+			float TU;
+			float TV;
+			skip 4; // NULL
+			
+			float TU;
+			float TV;
+			skip 4; // NULL
+			
+			u32 ending;
+			
+			i32 faceIdx1;
+			i32 faceIdx2;
+			i32 faceIdx3; // embedded bone?
 		}
 	
 	
